@@ -9,7 +9,7 @@ This file is dedicated to the creation of Deterministic Finite Automata for each
 "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 "+", "-", "*", "/", "<", ">", "=", "!",
 "(", ")", "[", "]", "{", "}",
-",", ";"
+",", ";", " "
 """
 
 
@@ -145,6 +145,88 @@ def generate_eq():
     f.close()
 
 
+def generate_comment():
+    """
+    Generate a Deterministic Finite Automaton that accepts a comment as defined in the C-Minus BNF.
+
+    Save a Json representation of the DFA in "automata/comment.json".
+    """
+    states = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+    ]
+
+    alphabet = [
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "+", "-", "*", "/", "<", ">", "=", "!",
+        "(", ")", "[", "]", "{", "}",
+        ",", ";", " "
+    ]
+
+    transitions = {
+        "0": {},
+        "1": {},
+        "2": {},
+        "3": {},
+        "4": {},
+        "5": {}
+    }
+
+    for letter in alphabet:
+        if letter == "/":
+            transitions["0"][letter] = "1"
+        else:
+            transitions["0"][letter] = "5"
+
+    for letter in alphabet:
+        if letter == "*":
+            transitions["1"][letter] = "2"
+        else:
+            transitions["1"][letter] = "5"
+
+    for letter in alphabet:
+        if letter == "*":
+            transitions["2"][letter] = "3"
+        else:
+            transitions["2"][letter] = "2"
+
+    for letter in alphabet:
+        if letter == "*":
+            transitions["3"][letter] = "3"
+        elif letter == "/":
+            transitions["3"][letter] = "4"
+        else:
+            transitions["3"][letter] = "2"
+
+    for letter in alphabet:
+        transitions["4"][letter] = "5"
+        transitions["5"][letter] = "5"
+
+    initial_state = "0"
+
+    accept_states = ["4"]
+    tags = {"4": ["comment"]}
+
+    automaton = DFA(
+        states,
+        alphabet,
+        transitions,
+        initial_state,
+        accept_states,
+        tags
+    )
+
+    f = open("automata/comment.json", "w")
+    f.write(automaton.to_json())
+    f.close()
+
+
 def generate_single_letter(letter: str, tag: str):
     """
     Generate a Deterministic Finite Automaton that accepts single-character tokens as defined in the C-Minus BNF.
@@ -252,6 +334,9 @@ generate_num()
 # Generate automaton for recognizing equality operator
 generate_eq()
 
+# Generate automaton for recognizing a comment
+generate_comment()
+
 # Automatize single-character automata creation
 map = {
     " ": "blank",
@@ -326,6 +411,8 @@ filenames = [
     "automata/ge.json",
     "automata/open_comment.json",
     "automata/close_comment.json",
+    # Comment
+    "automata/comment.json",
 ]
 
 for filename in filenames:
