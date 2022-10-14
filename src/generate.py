@@ -254,7 +254,7 @@ generate_eq()
 
 # Automatize single-character automata creation
 map = {
-    # "_": "blank",
+    " ": "blank",
     "+": "plus",
     "-": "minus",
     "*": "asterisk",
@@ -302,8 +302,8 @@ f.close()
 dfa = id.union(num).remove_unreachable_states()
 
 filenames = [
-    # "automata/blank.json",
     # Single-character
+    "automata/blank.json",
     "automata/plus.json",
     "automata/minus.json",
     "automata/asterisk.json",

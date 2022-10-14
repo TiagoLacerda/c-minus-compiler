@@ -13,8 +13,7 @@ f.close()
 
 # Load source code
 f = open("src/example.cminus", "r")
-# code = "_".join(f.read().split())
-code = "".join(f.read().split())
+code = " ".join(f.read().split())
 f.close()
 
 # Tokenize
@@ -59,7 +58,7 @@ for token in tokens:
         token[1] = keywords[token[0]]
 
 # Remove <blank> tokens
-# tokens = [token for token in tokens if "blank" not in token[1]]
+tokens = [token for token in tokens if "blank" not in token[1]]
 
 # Print result as a minified string.
 for i in range(len(tokens)):
