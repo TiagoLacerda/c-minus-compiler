@@ -19,29 +19,28 @@ f.close()
 # Tokenize
 tokens = []
 start = 0
-index = 0
-tags = None
-state = automaton.initial_state
-while index < len(code):
-    letter = code[index]
-    if letter not in automaton.alphabet:
-        raise ValueError(f"Unexpected symbol \"{letter}\"!")
+while start < len(code):
+    state = automaton.initial_state
+    final = -1
+    tags = None
+    for index in range(start, len(code)):
+        letter = code[index]
+        if letter not in automaton.alphabet:
+            raise ValueError(f"Unexpected symbol \"{letter}\"!")
 
-    state = automaton.transitions[state][letter]
+        state = automaton.transitions[state][letter]
 
-    if state in automaton.accept_states:
-        if state in automaton.tags.keys():
-            tags = automaton.tags[state]
-    else:
-        if tags == None:
-            raise ValueError("Could not parse source code!")
-        else:
-            tokens.append([code[start:index], tags])
-            state = automaton.initial_state
-            start = index
-            index -= 1
-            tags = None
-    index += 1
+        if state in automaton.accept_states:
+            final = index
+            if state in automaton.tags.keys():
+                tags = automaton.tags[state]
+
+    if start > final:
+        raise ValueError(f"Could't parse any token from index {start}")
+
+    tokens.append([code[start:final + 1], tags])
+    start = final + 1
+
 
 # Replace keyword token types
 keywords = {
