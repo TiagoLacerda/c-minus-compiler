@@ -66,8 +66,8 @@ class CFG:
 
         return {
             'root' : self.root,
-            'states' : self.states,
-            'terminals' : self.terminals,
+            'states' : list( self.states ),
+            'terminals' : list( self.terminals ),
             'derivations' : self.derivations
         }
 
@@ -80,8 +80,8 @@ class CFG:
 
         return CFG(
             data[ 'root' ],
-            data[ 'states' ],
-            data[ 'terminals' ],
+            set( data[ 'states' ] ),
+            set( data[ 'terminals' ] ),
             data[ 'derivation' ]
         )
 
@@ -99,6 +99,9 @@ class CFG:
         return CFG.from_dict(json.loads(data))
 
     def __str__( self ) -> str:
+        
+        state_header : str = "states = " + " ".join( self.states )
+        termn_header : str = "terminals = " + " ".join( self.terminals )
 
         transition_str : str = ""
         states : Deque[ str ] = deque( [ self.root ] )
@@ -122,7 +125,7 @@ class CFG:
                     slst.append(
                         " ".join( tr )
                     )
-            transition_str += " | ".join( slst ) + "\n"
+            transition_str += state + " :: " + " | ".join( slst ) + "\n"
 
             #--------------------------------------------------
             # updating the queue
@@ -133,4 +136,25 @@ class CFG:
                     if not ( a or b ):
                         states.append( st )
         
-        return transition_str
+        return f"{state_header}\n{termn_header}\n\n{transition_str}"
+
+if __name__ == "__main__":
+
+    G = CFG(
+        'start', # root
+        set(['start', 'form' , 'b_form' , 'u_form' , 'op' ]), # state
+        set([ 'id', 'neg' , 'and' , 'or' , 'then' , 'eq' ]),  # terminals
+        {
+            'start'  : [['form']],
+            'form'   : [['b_form'] , ['u_form'] , ['id']],
+            'b_form' : [['op','form','form']],
+            'u_form' : [['neg','form']],
+            'op'     : [['and'],['or'],['then'],['eq']] 
+        }
+    )
+
+    print( G )
+    
+    f = open( 'dummycfg.json' , 'w')
+    f.write( G.to_json() )
+    f.close()
