@@ -1,4 +1,6 @@
 from typing import *
+import json
+from collections import deque
 
 state_set  = Set[ str ]
 state_seq  = List[ str ]
@@ -19,7 +21,7 @@ class CFG:
         Creates a Context Free Grammar.
 
         Keyword arguments:
-        root: first state in all derivation
+        root: first state in any derivation sequence
         states: a finite set of non terminal states.
         terminals: states that terminate a derivation sequence
         derivations: derivation rules of the grammar
@@ -55,3 +57,80 @@ class CFG:
         self.states = states
         self.terminals = terminals
         self.derivations = derivations
+    
+    def to_dict( self ) -> Dict[ str , Any ]:
+
+        '''
+        Returns an equivalent to this class instance as a <dict>.
+        '''
+
+        return {
+            'root' : self.root,
+            'states' : self.states,
+            'terminals' : self.terminals,
+            'derivations' : self.derivations
+        }
+
+    @staticmethod
+    def from_dict( data : Dict[ str , Any ] ):
+
+        """
+        Returns a class instance from an equivalent <dict>.
+        """
+
+        return CFG(
+            data[ 'root' ],
+            data[ 'states' ],
+            data[ 'terminals' ],
+            data[ 'derivation' ]
+        )
+
+    def to_json(self):
+        """
+        Returns an equivalent to this class instance as a json <str>.
+        """
+        return json.dumps(self.to_dict())
+
+    @staticmethod
+    def from_json(data: str):
+        """
+        Returns a class instance from an equivalent json <str>.
+        """
+        return CFG.from_dict(json.loads(data))
+
+    def __str__( self ) -> str:
+
+        transition_str : str = ""
+        states : Deque[ str ] = deque( [ self.root ] )
+        visited : state_set = set() 
+
+        while states:  # while there are elements in the queue
+
+            #-------------------------------------------------
+            # fetching next state and transitions
+            state = states.popleft()
+            transitions = self.derivations[ state ]
+            visited.add( state )
+
+            #------------------------------------------------
+            # updating transition strings 
+            slst = []
+            for tr in transitions:
+                if len( tr ) == 1:
+                    slst.append( tr[ 0 ] )
+                else:
+                    slst.append(
+                        " ".join( tr )
+                    )
+            transition_str += " | ".join( slst ) + "\n"
+
+            #--------------------------------------------------
+            # updating the queue
+            for tr in transitions:
+                for st in tr:
+                    a : bool = st in visited
+                    b : bool = st in self.terminals
+                    if not ( a or b ):
+                        states.append( st )
+        
+        return transition_str
