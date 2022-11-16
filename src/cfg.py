@@ -138,6 +138,8 @@ class CFG:
     
     def __str__( self ) -> str:
         
+        name = "unknown" if self.name is None else self.name
+        name_header  : str = f"name = {name}" 
         state_header : str = "states = " + " ".join( self.states )
         termn_header : str = "terminals = " + " ".join( self.terminals )
 
@@ -174,11 +176,19 @@ class CFG:
                     if not ( a or b ):
                         states.append( st )
         
-        return f"{state_header}\n{termn_header}\n\n{transition_str}"
+        return f"{name_header}\n\n{state_header}\n{termn_header}\n\n{transition_str}"
 
     ######## PARSING #########
 
     def parse( self , tok_seq : List[ str ] ) -> bool:
+        
+        '''
+        Checks if tok_seq represents a valid sentence, according
+        to the rules of the grammar. Uses the recursive descent
+        algorithm.
+        '''
+        
+        result : bool
 
         #-----------------------------------------------------
         # If any of the tokens are foreign to the terminals,
@@ -186,6 +196,8 @@ class CFG:
         # quence is invalid.
         if any( tok not in self.terminals for tok in tok_seq ):
             return False
+        
+        return result
         
 
 if __name__ == "__main__":
