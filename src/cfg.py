@@ -64,6 +64,8 @@ class CFG:
         self.derivations = derivations
         self.name = name
 
+        
+
     ######## DATA REPRESENTATION #########
     def to_dict( self ) -> Dict[ str , Any ]:
 
