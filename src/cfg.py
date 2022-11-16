@@ -15,16 +15,21 @@ class CFG:
         root : str,
         states : state_set,
         terminals : state_set,
-        derivations : transition
+        derivations : transition,
+
+        name : str = None
     ):
         """
         Creates a Context Free Grammar.
 
-        Keyword arguments:
+        Mandatory arguments:
         root: first state in any derivation sequence
         states: a finite set of non terminal states.
         terminals: states that terminate a derivation sequence
         derivations: derivation rules of the grammar
+
+        Optional arguments:
+        name: name of the language that uses this grammar
         """
 
         #-----------------------------------------------
@@ -57,19 +62,26 @@ class CFG:
         self.states = states
         self.terminals = terminals
         self.derivations = derivations
-    
+        self.name = name
+
+    ######## DATA REPRESENTATION #########
     def to_dict( self ) -> Dict[ str , Any ]:
 
         '''
         Returns an equivalent to this class instance as a <dict>.
         '''
 
-        return {
+        d =  {
             'root' : self.root,
             'states' : list( self.states ),
             'terminals' : list( self.terminals ),
             'derivations' : self.derivations
         }
+
+        if not( self.name is None ):
+            d[ 'name' ] = self.name
+
+        return d 
 
     @staticmethod
     def from_dict( data : Dict[ str , Any ] ):
@@ -82,7 +94,9 @@ class CFG:
             data[ 'root' ],
             set( data[ 'states' ] ),
             set( data[ 'terminals' ] ),
-            data[ 'derivation' ]
+            data[ 'derivations' ],
+
+            name = data.get("name",None)
         )
 
     def to_json(self):
@@ -97,7 +111,31 @@ class CFG:
         Returns a class instance from an equivalent json <str>.
         """
         return CFG.from_dict(json.loads(data))
+    
+    def to_file( self , folder : str = None ):
+        
+        """
+        Saves object locally in json format
+        """
 
+        #------------------------------------------------------
+        # Grammar must have a name, for the file.
+        if self.name is None:
+            raise ValueError( "If this grammar was a horse America would make song about it, because it has no name" )
+        
+        if folder is None:
+            path = f"{self.name}cfg.json"
+        else:
+            path = f"./{folder}/{self.name}cfg.json"
+        
+        with open( path , "w" ) as f:
+            f.write( self.to_json() )
+    
+    @staticmethod
+    def from_file( filename ):
+        with open( filename , "r" ) as f:
+            return CFG.from_json( f.readline() )
+    
     def __str__( self ) -> str:
         
         state_header : str = "states = " + " ".join( self.states )
@@ -138,23 +176,22 @@ class CFG:
         
         return f"{state_header}\n{termn_header}\n\n{transition_str}"
 
+    ######## PARSING #########
+
+    def parse( self , tok_seq : List[ str ] ) -> bool:
+
+        #-----------------------------------------------------
+        # If any of the tokens are foreign to the terminals,
+        # then there is no need to make a parse tree: the se-
+        # quence is invalid.
+        if any( tok not in self.terminals for tok in tok_seq ):
+            return False
+        
+
 if __name__ == "__main__":
 
-    G = CFG(
-        'start', # root
-        set(['start', 'form' , 'b_form' , 'u_form' , 'op' ]), # state
-        set([ 'id', 'neg' , 'and' , 'or' , 'then' , 'eq' ]),  # terminals
-        {
-            'start'  : [['form']],
-            'form'   : [['b_form'] , ['u_form'] , ['id']],
-            'b_form' : [['op','form','form']],
-            'u_form' : [['neg','form']],
-            'op'     : [['and'],['or'],['then'],['eq']] 
-        }
-    )
 
-    print( G )
-    
-    f = open( 'dummycfg.json' , 'w')
-    f.write( G.to_json() )
+    f = open( 'tinycfg.json' , 'r')
+    G = CFG.from_json( f.read() )
     f.close()
+    print( G ) 
