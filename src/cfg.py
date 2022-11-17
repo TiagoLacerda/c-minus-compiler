@@ -3,6 +3,8 @@ import json
 from collections import deque
 from copy import deepcopy
 
+from syntree import synode
+
 state_set  = Set[ str ]
 state_seq  = List[ str ]
 transition = Dict[ str , List[ state_seq ] ]
@@ -154,10 +156,16 @@ class CFG:
         
         name = "unknown" if self.name is None else self.name
         name_header  : str = f"name = {name}" 
-        state_header : str = "states = " + " ".join( self.states )
-        termn_header : str = "terminals = " + " ".join( self.terminals )
 
-        transition_str : str = ""
+        state_list = list( self.states )
+        state_list.sort()
+        state_header : str = "states: [" + " , ".join( state_list ) + "]"
+
+        termn_list = list( self.terminals )
+        termn_list.sort()
+        termn_header : str = "terminals: [" + " , ".join( self.terminals ) + "]"
+
+        transition_str : str = "rules:\n"
         states : Deque[ str ] = deque( [ self.root ] )
         visited : state_set = { self.root } 
 
@@ -191,9 +199,46 @@ class CFG:
                         states.append( st )
                         visited.add( st )
         
-        return f"{name_header}\n\n{state_header}\n{termn_header}\n\n{transition_str}"
+        return f"{name_header}\n{state_header}\n{termn_header}\n{transition_str}"
 
     ######## PARSING #########
+
+    def build_syntree( self , tok_seq : List[ str ] ):
+
+        root : object = synode( self.root , 0 )
+        node : object = root
+
+        i : int = 0
+        while i < len( tok_seq ):
+
+            a = node.state in self.terminals
+            b = node.state == tok_seq[ i ]
+
+            #-----------------------------------------
+            # the leaf node matches the token at i, must
+            # return to parent node and start exploring
+            if a and b:
+                node = node.parent
+                node.exploration += 1
+                i += 1
+                continue
+            
+            #--------------------------------------------
+            # Mismatch. Return to parent node and tell that
+            # current derivation failed
+            elif a:
+                node = node.parent
+                node.failed = True
+                continue
+            
+            c = node.failed
+            d = node.exploration >= len( node.children )
+            e = node.derivation >= len( self.derivations[ node.state ] )
+
+            if c and e:
+                node = node.parent
+        
+        pass
 
     def remove_leftr( self ):
 
@@ -222,11 +267,18 @@ class CFG:
         A* :: a A* | None 
         B* :: b B* | a A* b B* | None
         '''
+
+        if not self.left_recursion:
+            return
         
+        #-------------------------------------------------------
+        # Sorting states based on number of possible derivations
         state_lst : state_seq = list( self.states )
         foo : Callable = lambda x : len( self.derivations[ x ] )
         state_lst.sort( key = foo )
 
+        #--------------------------------------------------------
+        # New ruleset
         rules_dict : Dict[ str , List[ state_seq ] ] = deepcopy( self.derivations )
         new_states : state_set = set()
         
@@ -308,7 +360,7 @@ class CFG:
         self.derivations = rules_dict
         self.states = self.states | new_states
 
-    def parse( self , tok_seq : List[ str ] ) -> bool:
+    def parse( self , tok_seq : List[ str ] , verbose : bool = False ) -> bool:
         
         '''
         Checks if tok_seq represents a valid sentence, according
@@ -330,6 +382,11 @@ class CFG:
         # reliable top down parsing
         if self.left_recursion:
             self.remove_leftr()
+        
+        tree : object = self.build_syntree( tok_seq )
+        result = ( tree is None )
+        if result and verbose:
+            print( tree )
 
         return result
         
@@ -337,7 +394,9 @@ class CFG:
 if __name__ == "__main__":
 
     G = CFG.from_file( "dummycfg.json" )
+
+    print( f"before\n\n{G}\n")
     G.remove_leftr()
-    print( G )
+    print( f"after\n\n{G}\n")
 
     
