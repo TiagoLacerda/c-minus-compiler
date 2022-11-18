@@ -163,7 +163,7 @@ class CFG:
 
         termn_list = list( self.terminals )
         termn_list.sort()
-        termn_header : str = "terminals: [" + " , ".join( self.terminals ) + "]"
+        termn_header : str = "terminals: [" + " , ".join( term_list ) + "]"
 
         transition_str : str = "rules:\n"
         states : Deque[ str ] = deque( [ self.root ] )
@@ -194,7 +194,7 @@ class CFG:
                 for st in tr:
                     a : bool = st in visited
                     b : bool = st in self.terminals
-                    c : bool = st == EPSILON
+                    c : bool = st == EPSILON # Ah yes, epsilon is the empty state. 
                     if not ( a or b or c ):
                         states.append( st )
                         visited.add( st )
@@ -215,39 +215,69 @@ class CFG:
             is_succ : bool = node.status == synode.SUCCESS
             is_fail : bool = node.status == synode.FAIL
             is_dead : bool = node.status == synode.DEAD
-
+            
+            #------------------------------------------------------
+            # Here the derivation is fineshed. You either have a
+            # correct tree or sequence is not syntatically correct
             if is_root and ( is_dead or is_succ ):
                 return node
             
+            #-----------------------------------------------------
+            # If the node is dead, it means that there are no deri
+            # vations remaining to try. So the parent failed its c
+            # urrent derivation and try the next one. This logic is
+            # repeated upstream untill a node with at least one deri
+            # vation remainig is found.
             if is_dead:
                 node = node.parent
                 node.derivation += 1
                 node.status == synode.FAIL
                 continue
             
+            #---------------------------------------------------
+            # A node is succesfull if is a leaf node and its symbol
+            # matches its correspondent token or when its non leaf
+            # and all of its children are succesfull. In both cases
+            # must return to the parent, update the last matched token
+            # and explore the next child.
             if is_succ:
                 parent = node.parent
                 parent.last_match = node.last_match
                 parent.to_explore += 1
                 node = parent
                 continue
-
+            
+            #----------------------------------------------------
+            # internal node in exploration mode. 3 subcases.
             if is_expl and not( is_leaf ):
                 
+                #-----------------------------------------------
+                # Here the node was not even initialized. So the
+                # first derivation is loaded on its children.
                 if len( node.children ) == 0:
                     symbol : str = node.symbol
                     tokens : state_seq = self.derivations[ symbol ][ 0 ]
                     for tok in tokens:
                         node.add_children( tok )
-
+                
+                #-----------------------------------------------
+                # The node already explored all of its children
+                # on the current derivation. Meaning it is correct
                 elif node.to_explore >= len( node.children ):
                     node.status = synode.SUCCESS
-
+                
+                #------------------------------------------------
+                # The last child of the current derivation was correct
+                # now time to explore the next one.
                 else:
                     child = node.children[ node.to_explore ]
                     child.last_match = node.last_match
                 continue
-
+            
+            #-------------------------------------------------------
+            # A leaf node in exploration mode only checks if its symbol
+            # matches the corresponding token. Case positive, it is sucesse
+            # ful, else is already dead.
             if is_expl:
                 tok : str = tok_seq[ node.last_match + 1 ]
                 if node.symbol == tok:
