@@ -205,39 +205,60 @@ class CFG:
 
     def build_syntree( self , tok_seq : List[ str ] ):
 
-        root : object = synode( self.root , 0 )
-        node : object = root
+        node : object = synode( self.root , 0 )
 
-        i : int = 0
-        while i < len( tok_seq ):
+        while True:
+            
+            is_root : bool = node.symbol == self.root
+            is_leaf : bool = node.symbol in self.terminals
+            is_expl : bool = node.status == synode.EXPLORING
+            is_succ : bool = node.status == synode.SUCCESS
+            is_fail : bool = node.status == synode.FAIL
+            is_dead : bool = node.status == synode.DEAD
 
-            a = node.state in self.terminals
-            b = node.state == tok_seq[ i ]
-
-            #-----------------------------------------
-            # the leaf node matches the token at i, must
-            # return to parent node and start exploring
-            if a and b:
+            if is_root and ( is_dead or is_succ ):
+                return node
+            
+            if is_dead:
                 node = node.parent
-                node.exploration += 1
-                i += 1
+                node.derivation += 1
+                node.status == synode.FAIL
                 continue
             
-            #--------------------------------------------
-            # Mismatch. Return to parent node and tell that
-            # current derivation failed
-            elif a:
-                node = node.parent
-                node.failed = True
+            if is_succ:
+                parent = node.parent
+                parent.last_match = node.last_match
+                parent.to_explore += 1
+                node = parent
                 continue
-            
-            c = node.failed
-            d = node.exploration >= len( node.children )
-            e = node.derivation >= len( self.derivations[ node.state ] )
 
-            if c and e:
-                node = node.parent
-        
+            if is_expl and not( is_leaf ):
+                
+                if len( node.children ) == 0:
+                    symbol : str = node.symbol
+                    tokens : state_seq = self.derivations[ symbol ][ 0 ]
+                    for tok in tokens:
+                        node.add_children( tok )
+
+                elif node.to_explore >= len( node.children ):
+                    node.status = synode.SUCCESS
+
+                else:
+                    child = node.children[ node.to_explore ]
+                    child.last_match = node.last_match
+                continue
+
+            if is_expl:
+                tok : str = tok_seq[ node.last_match + 1 ]
+                if node.symbol == tok:
+                    node.status = synode.SUCCESS
+                    node.last_match += 1
+                else:
+                    node.status = synode.DEAD
+                continue
+                
+            if is_fail and not( is_leaf ):
+                continue
         pass
 
     def remove_leftr( self ):
@@ -341,6 +362,7 @@ class CFG:
                     #
                     # by, for every a where Sj :: a:
                     # Si :: a b
+                    
                     bs : List[ state_seq ] = []
                     for rule in rules:
                         if rule[ 0 ] == Sj and len( rule ) > 1:
