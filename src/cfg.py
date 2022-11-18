@@ -163,7 +163,7 @@ class CFG:
 
         termn_list = list( self.terminals )
         termn_list.sort()
-        termn_header : str = "terminals: [" + " , ".join( term_list ) + "]"
+        termn_header : str = "terminals: [" + " , ".join( termn_list ) + "]"
 
         transition_str : str = "rules:\n"
         states : Deque[ str ] = deque( [ self.root ] )
@@ -206,9 +206,17 @@ class CFG:
     def build_syntree( self , tok_seq : List[ str ] ):
 
         node : object = synode( self.root , 0 )
-
+        root = node
+        node_swp = True
         while True:
             
+            # if node_swp:
+                # print( root )
+            node_swp = False
+
+            if node.symbol == EPSILON:
+                node.status = synode.SUCCESS
+
             is_root : bool = node.symbol == self.root
             is_leaf : bool = node.symbol in self.terminals
             is_expl : bool = node.status == synode.EXPLORING
@@ -216,6 +224,7 @@ class CFG:
             is_fail : bool = node.status == synode.FAIL
             is_dead : bool = node.status == synode.DEAD
             
+
             #------------------------------------------------------
             # Here the derivation is fineshed. You either have a
             # correct tree or sequence is not syntatically correct
@@ -229,9 +238,10 @@ class CFG:
             # repeated upstream untill a node with at least one deri
             # vation remainig is found.
             if is_dead:
+                node_swp = True
                 node = node.parent
                 node.derivation += 1
-                node.status == synode.FAIL
+                node.status = synode.FAIL
                 continue
             
             #---------------------------------------------------
@@ -259,11 +269,12 @@ class CFG:
                     tokens : state_seq = self.derivations[ symbol ][ 0 ]
                     for tok in tokens:
                         node.add_children( tok )
+                    node_swp = True
                 
                 #-----------------------------------------------
                 # The node already explored all of its children
                 # on the current derivation. Meaning it is correct
-                elif node.to_explore >= len( node.children ):
+                if node.to_explore >= len( node.children ):
                     node.status = synode.SUCCESS
                 
                 #------------------------------------------------
@@ -272,6 +283,7 @@ class CFG:
                 else:
                     child = node.children[ node.to_explore ]
                     child.last_match = node.last_match
+                    node = child
                 continue
             
             #-------------------------------------------------------
@@ -279,16 +291,35 @@ class CFG:
             # matches the corresponding token. Case positive, it is sucesse
             # ful, else is already dead.
             if is_expl:
-                tok : str = tok_seq[ node.last_match + 1 ]
-                if node.symbol == tok:
-                    node.status = synode.SUCCESS
-                    node.last_match += 1
-                else:
+                try:
+                    tok : str = tok_seq[ node.last_match + 1 ]
+                    if node.symbol == tok:
+                        node.status = synode.SUCCESS
+                        node.last_match += 1
+                    else:
+                        node.status = synode.DEAD
+                except IndexError:
                     node.status = synode.DEAD
                 continue
-                
+            
+            #--------------------------------------------------------------
+            # My homeboy has failed, noooooooooooo.
+            # Jokes apart, it should try the next derivation, if there is one
+            # , and revert back to exploration mode. However, if there is no
+            # more derivations, the node is dead
             if is_fail and not( is_leaf ):
-                continue
+                symbol : str = node.symbol
+                rules = self.derivations[ symbol ]
+                if node.derivation < len( rules ): # there are new derivations to try
+                    tokens = rules[ node.derivation ]
+                    node.children.clear()
+                    node.to_explore = 0
+                    for tok in tokens:
+                        node.add_children( tok )
+                    node.status = synode.EXPLORING
+                    node_swp = True
+                else:
+                    node.status = synode.DEAD
         pass
 
     def remove_leftr( self ):
@@ -436,7 +467,7 @@ class CFG:
             self.remove_leftr()
         
         tree : object = self.build_syntree( tok_seq )
-        result = ( tree is None )
+        result = tree.status == synode.SUCCESS
         if result and verbose:
             print( tree )
 
@@ -445,10 +476,17 @@ class CFG:
 
 if __name__ == "__main__":
 
-    G = CFG.from_file( "dummycfg.json" )
+    G = CFG.from_file( "boolform.json" )
 
-    print( f"before\n\n{G}\n")
+    sep = "-"*20
+    print( f"before{sep}\n\n{G}\n")
     G.remove_leftr()
-    print( f"after\n\n{G}\n")
+    print( f"after{sep}\n\n{G}\n")
 
+    test = "~ ( id + id ) = id".split()
+    print( f"test tokens: {test}")
+
+    tree = G.build_syntree( test )
+    print( f"\nresulting syntree:\n{tree}")
+    print( tree.status == synode.SUCCESS)
     
