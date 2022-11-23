@@ -476,17 +476,7 @@ class CFG:
 
 if __name__ == "__main__":
 
-    G = CFG.from_file( "boolform.json" )
-
-    sep = "-"*20
-    print( f"before{sep}\n\n{G}\n")
+    G = CFG.from_file( "cminus.json" )
     G.remove_leftr()
-    print( f"after{sep}\n\n{G}\n")
-
-    test = "~ ( id + id ) = id".split()
-    print( f"test tokens: {test}")
-
-    tree = G.build_syntree( test )
-    print( f"\nresulting syntree:\n{tree}")
-    print( tree.status == synode.SUCCESS)
+    print( G )
     

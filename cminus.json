@@ -179,7 +179,7 @@
             ["ε"]
         ],
         "arg-lst":[
-            ["arg-list",",","expression"],
+            ["arg-lst",",","expression"],
             ["expression"]
         ]
     }
