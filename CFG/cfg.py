@@ -3,7 +3,10 @@ import json
 from collections import deque
 from copy import deepcopy
 
-from syntree import synode
+try:
+    from syntree import synode
+except ModuleNotFoundError:
+    from CFG.syntree import synode
 
 state_set  = Set[ str ]
 state_seq  = List[ str ]
@@ -76,9 +79,10 @@ class CFG:
         self.left_recursion = False
         for state in states:
             for rule in derivations[ state ]:
-                if rule[ 0 ] == state:
+                if rule[ 0 ] in self.states:
                     self.left_recursion = True
                     break
+    
 
     ######## DATA REPRESENTATION #########
     def to_dict( self ) -> Dict[ str , Any ]:
@@ -210,8 +214,8 @@ class CFG:
         node_swp = True
         while True:
             
-            # if node_swp:
-                # print( root )
+            if node_swp:
+                print( root )
             node_swp = False
 
             if node.symbol == EPSILON:
@@ -320,6 +324,12 @@ class CFG:
                     node_swp = True
                 else:
                     node.status = synode.DEAD
+                
+                #---------------------------------------------------
+                # updating last match
+                node.last_match = -1
+                if not ( node.parent is None ):
+                    node.last_match = node.parent.last_match
         pass
 
     def remove_leftr( self ):
@@ -476,7 +486,12 @@ class CFG:
 
 if __name__ == "__main__":
 
-    G = CFG.from_file( "cminus.json" )
+    G = CFG.from_file( "CFG/grammars/palindrome.json" )
     G.remove_leftr()
     print( G )
+    tree = G.build_syntree(
+        ["0","0","1"]
+    )
+    print( tree.status == synode.SUCCESS )
+
     
