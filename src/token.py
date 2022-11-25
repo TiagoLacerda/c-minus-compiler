@@ -29,7 +29,7 @@ class Token:
             "value": self.value,
             "tags": self.tags,
             "line": self.line,
-            "column": self.column,
+            "column": self.column
         }
 
     def from_dict(data: dict):
@@ -40,7 +40,7 @@ class Token:
             value=data["value"],
             tags=data["tags"],
             line=data["line"],
-            column=data["column"],
+            column=data["column"]
         )
 
     def to_json(self):

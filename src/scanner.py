@@ -1,3 +1,4 @@
+import json
 from dfa import DFA
 from token import Token
 
@@ -110,3 +111,8 @@ for i in range(len(tokens)):
     else:
         print(f"\x1B[{91}m{prefix}{tokens[i].value.ljust(20)}{tokens[i].tags}\x1B[0m")
 print("\n\n")
+
+# Write result to .json file
+f = open("output/example.json", "w")
+f.write(json.dumps({"tokens": [token.to_dict() for token in tokens]}))
+f.close()
