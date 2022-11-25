@@ -1,4 +1,5 @@
 from dfa import DFA
+from token import Token
 
 
 """
@@ -71,7 +72,8 @@ while start < len(code):
             f"Could't parse any token starting from line {line}, column {column}!")
 
     line, column = get_line_column(code, start)
-    tokens.append([code[start:final + 1], tags, line, column])
+    # tokens.append([code[start:final + 1], tags, line, column])
+    tokens.append(Token(code[start:final + 1], tags, line, column))
     start = final + 1
 
 
@@ -86,25 +88,25 @@ keywords = {
 }
 
 for token in tokens:
-    if (token[0] in keywords.keys()):
-        token[1] = keywords[token[0]]
+    if (token.value in keywords.keys()):
+        token.tags = keywords[token.value]
 
 # Remove <blank> tokens
-tokens = [token for token in tokens if "blank" not in token[1]]
+tokens = [token for token in tokens if "blank" not in token.tags]
 
 # Print result as a minified string.
 for i in range(len(tokens)):
     if (i % 2 == 0):
-        print(f"\x1B[{94}m{tokens[i][0]}\x1B[0m", end="")
+        print(f"\x1B[{94}m{tokens[i].value}\x1B[0m", end="")
     else:
-        print(f"\x1B[{91}m{tokens[i][0]}\x1B[0m", end="")
+        print(f"\x1B[{91}m{tokens[i].value}\x1B[0m", end="")
 print("\n\n")
 
 # Print result token by token, showing type
 for i in range(len(tokens)):
-    prefix = f"ln {tokens[i][2]}, cl {tokens[i][3]}: ".ljust(20)
+    prefix = f"ln {tokens[i].line}, cl {tokens[i].column}: ".ljust(20)
     if (i % 2 == 0):
-        print(f"\x1B[{94}m{prefix}{tokens[i][0].ljust(20)}{tokens[i][1]}\x1B[0m")
+        print(f"\x1B[{94}m{prefix}{tokens[i].value.ljust(20)}{tokens[i].tags}\x1B[0m")
     else:
-        print(f"\x1B[{91}m{prefix}{tokens[i][0].ljust(20)}{tokens[i][1]}\x1B[0m")
+        print(f"\x1B[{91}m{prefix}{tokens[i].value.ljust(20)}{tokens[i].tags}\x1B[0m")
 print("\n\n")
