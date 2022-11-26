@@ -1,4 +1,4 @@
-main(void) {
+int main(void) {
     /* this is a very nice comment */
     int i = 0;
     int j = 8;
