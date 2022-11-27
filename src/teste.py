@@ -1,7 +1,12 @@
 from token import Token
 from tokenList import TokenList
+import os.path
 
 arquivo_entrada = "output/example.json"
+
+# Verifica se o arquivo de entrada existe no diretorio
+if not os.path.exists(arquivo_entrada):
+    print("Arquivo de entrada não existe")
 
 # Abre o arquivo de entrada (resposta do analisador lexico)
 f = open(arquivo_entrada, "r")
