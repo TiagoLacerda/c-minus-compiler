@@ -24,6 +24,9 @@ class Token:
     def __str__(self):
         return f"({self.value}, {self.tags}, {self.line}, {self.column})"
 
+    def __eq__(self, other):
+        return self.value == other.value and self.tags == other.tags and self.line == other.line and self.column == other.column
+
     def to_dict(self):
         """
         Returns an equivalent to this class instance as a <dict>.
