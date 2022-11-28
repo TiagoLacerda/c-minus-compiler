@@ -1,4 +1,4 @@
-from dfa import DFA
+from src.dfa import DFA
 
 
 """

@@ -1,8 +1,9 @@
 import json
 import sys
-from dfa import DFA
-from token import Token
-from scanner import Scanner
+
+from src.dfa import DFA
+from src.token import Token
+from src.scanner import Scanner
 
 """
 This file is dedicated to scanning and parsing source code written in the C-Minus language.
