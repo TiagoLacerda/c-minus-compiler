@@ -21,6 +21,9 @@ class Token:
         self.line = line
         self.column = column
 
+    def __str__(self):
+        return f"({self.value}, {self.tags}, {self.line}, {self.column})"
+
     def to_dict(self):
         """
         Returns an equivalent to this class instance as a <dict>.
