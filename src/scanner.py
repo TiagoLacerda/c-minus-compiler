@@ -1,118 +1,115 @@
-import json
 from dfa import DFA
 from token import Token
 
 
-"""
-This file is dedicated to tokenizing source code written in the C-Minus language.
-"""
-
-
-def get_line_column(code: str, index: int):
+def get_line_column(string: str, index: int):
     """
-    Retrieve line and column equivalent of [index] in [code]. Lines break at newline character.
+    Retrieve line and column equivalent of [index] in [string]. Lines break at newline character.
 
     Parameter [index] is zero-based. Line and Column are 1-based.
 
     Keyword arguments:
-    code: a <str> representation of source code.
-    index: index of a character in [code].
+    string: a <str> representation of source string.
+    index: index of a character in [string].
     """
-    if index >= len(code):
+    if index >= len(string):
         raise IndexError()
 
     line = 1
     column = 1
     for i in range(index):
         column += 1
-        if code[i] == "\n":
+        if string[i] == "\n":
             line += 1
             column = 1
 
     return line, column
 
 
-# Load automaton
-f = open("automata/complete.json", "r")
-automaton = DFA.from_json(f.read())
-f.close()
+class Scanner:
+    """
+    Scanner.
+    """
 
-# Load source code
-f = open("src/example.cminus", "r")
-code = f.read()
-f.close()
+    def __init__(self, automaton: DFA):
+        """
+        Create a Scanner.
 
-# Tokenize
-tokens = []
-start = 0
-while start < len(code):
-    state = automaton.initial_state
-    final = -1
-    tags = None
-    for index in range(start, len(code)):
-        letter = code[index]
-        # If [letter] is any kind of whitespace (blankspace, newline, tab, ...), treat it as blankspace
-        if letter.isspace():
-            letter = " "
+        Keyword arguments:
+        automaton: a deterministic finite automaton that defines the language used to tokenize a given string.
+        """
+        self.automaton = automaton
 
-        if letter not in automaton.alphabet:
-            line, column = get_line_column(code, index)
-            raise ValueError(
-                f"Unexpected symbol {letter} at line {line}, column {column}!")
+    def scan(self, string: str):
+        """
+        Tokenize a [string].
+        """
 
-        state = automaton.transitions[state][letter]
+        # Tokenize
+        tokens = []
+        start = 0
+        while start < len(string):
+            # Reset scanning parameters
+            state = self.automaton.initial_state  # Current automaton state
+            final = -1  # Final index of current longest-acceptable-string
+            tags = None  # Tags associated with current longest-acceptable-string
 
-        if state in automaton.accept_states:
-            final = index
-            if state in automaton.tags.keys():
-                tags = automaton.tags[state]
+            # Scan whole string starting from [start]
+            for index in range(start, len(string)):
+                letter = string[index]
 
-    if start > final:
-        line, column = get_line_column(code, start)
-        raise ValueError(
-            f"Could't parse any token starting from line {line}, column {column}!")
+                # If [letter] is any kind of whitespace (blankspace, newline, tab, ...), treat it as blankspace
+                if letter.isspace():
+                    letter = " "
 
-    line, column = get_line_column(code, start)
-    # tokens.append([code[start:final + 1], tags, line, column])
-    tokens.append(Token(code[start:final + 1], tags, line, column))
-    start = final + 1
+                # Error detection
+                if letter not in self.automaton.alphabet:
+                    line, column = get_line_column(string, index)
+                    raise ValueError(
+                        f"Unexpected symbol {letter} at line {line}, column {column}!")
 
+                state = self.automaton.transitions[state][letter]
 
-# Replace keyword token types
-keywords = {
-    "else": ["else"],
-    "if": ["if"],
-    "int": ["int"],
-    "return": ["return"],
-    "void": ["void"],
-    "while": ["while"]
-}
+                if state in self.automaton.accept_states:
+                    # Keep track of longest-acceptable-string
+                    final = index
+                    if state in self.automaton.tags.keys():
+                        tags = self.automaton.tags[state]
 
-for token in tokens:
-    if (token.value in keywords.keys()):
-        token.tags = keywords[token.value]
+            line, column = get_line_column(string, start)
 
-# Remove <blank> tokens
-tokens = [token for token in tokens if "blank" not in token.tags]
+            # Error detection
+            if start > final:
+                raise ValueError(
+                    f"Could't parse any token starting from line {line}, column {column}!")
 
-# Print result as a minified string.
-for i in range(len(tokens)):
-    if (i % 2 == 0):
-        print(f"\x1B[{94}m{tokens[i].value}\x1B[0m", end="")
-    else:
-        print(f"\x1B[{91}m{tokens[i].value}\x1B[0m", end="")
-print("\n\n")
+            # Instantiate token
+            token = Token(string[start:final + 1], tags, line, column)
 
-# Print result token by token, showing type
-for i in range(len(tokens)):
-    prefix = f"ln {tokens[i].line}, cl {tokens[i].column}: ".ljust(20)
-    if (i % 2 == 0):
-        print(f"\x1B[{94}m{prefix}{tokens[i].value.ljust(20)}{tokens[i].tags}\x1B[0m")
-    else:
-        print(f"\x1B[{91}m{prefix}{tokens[i].value.ljust(20)}{tokens[i].tags}\x1B[0m")
-print("\n\n")
+            # Error detection
+            if len(token.tags) > 1:
+                raise ValueError(
+                    f"Ambiguity found in token {token.value}, starting from line {line}, column {column}: type can be {token.tags}")
 
-# Write result to .json file
-f = open("output/example.json", "w")
-f.write(json.dumps({"tokens": [token.to_dict() for token in tokens]}))
-f.close()
+            # Add token to tokens
+            tokens.append(token)
+            start = final + 1  # Start index of current longest-acceptable-string
+
+        # Replace keyword token types
+        keywords = {
+            "else": ["else"],
+            "if": ["if"],
+            "int": ["int"],
+            "return": ["return"],
+            "void": ["void"],
+            "while": ["while"]
+        }
+
+        for token in tokens:
+            if (token.value in keywords.keys()):
+                token.tags = keywords[token.value]
+
+        # Remove <blank> tokens
+        tokens = [token for token in tokens if "blank" not in token.tags]
+
+        return tokens
