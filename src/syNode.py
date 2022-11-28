@@ -30,9 +30,7 @@ class SyNode:
         self.parent = parent
         self.children = list()
 
-    def add_children( self , symbol : Producao ):
-
-        child = SyNode( symbol=symbol , level=self.level + 1 , parent= self)
+    def add_children( self , child ):
         self.children.append( child )
     
     #------------------------------------------------------------
@@ -48,7 +46,10 @@ class SyNode:
             node = nodes[ -1 ]
             if explored[ -1 ] == -1:
                 indent = ( node.level - self.level )*"| "
-                s = s + f"{indent}{node.symbol}\n"
+                if (node.symbol == None):
+                    s = s + f"{indent}{node.token.tags[0]}\n"
+                else:
+                    s = s + f"{indent}{node.symbol.name}\n"
                 explored[ -1 ] = 0
 
             if explored[ -1 ] >= len( node.children ):
