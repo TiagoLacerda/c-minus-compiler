@@ -1,13 +1,13 @@
-int main(void) {
+main(void) {
     /* this is a very nice comment */
-    int i ;
-    int j ;
+    int i = 0;
+    int j = 8;
     while (i < 20)
     {
         if (i == j)
         {
-            j = i;
+            print(i);
         }
     }
-    return ;
+    return 0;
 }

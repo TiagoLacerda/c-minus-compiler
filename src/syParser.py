@@ -4,15 +4,19 @@ from syNode import SyNode
 from token import Token
 import string
 
+
+class SyParserTokenException(Exception):
+    def __init__(self, token):
+        self.erro = "Erro sintatico - linha: {} , coluna: {} \n Token problemático: {} \n".format(token.line, token.column, token.value)
+        super().__init__(self.erro)
+
 # Declarando Classe do Analisador Sintatico
-class Parser():
+class SyParser():
 
     # Metodo construtor da classe
     def __init__(
             self,
-            tem_erro_sintatico : bool = False,
-            erro_sintatico: string = "",
-            entrada : List = [],
+            entrada : List[ Token ] = [],
             posicao_token_atual : int = 0,
             saida : string = ""
 
@@ -20,8 +24,6 @@ class Parser():
 
         self.entrada = entrada
         self.posicao_token_atual = posicao_token_atual
-        self.tem_erro_sintatico = tem_erro_sintatico
-        self.erro_sintatico = erro_sintatico
         self.saida = saida
         
     # Faz o cabecote de leitura apontar para o proximo token da lista
@@ -29,7 +31,7 @@ class Parser():
         self.posicao_token_atual += 1
         
     # Dá match com terminal e cria folha do terminal na arvore
-    def match_terminal(self, parent: SyNode, expectedTokenTag: str):
+    def match_terminal(self, parent: SyNode, expectedTokenTag: string):
         if self.posicao_token_atual >= len(self.entrada):
             return False
         if (self.entrada[self.posicao_token_atual].tags[0]==expectedTokenTag):
@@ -37,15 +39,7 @@ class Parser():
             parent.add_children(folha_terminal)
             self.next_token()
             return True
-        else:
-            self.erro()
         return False
-
-    def erro(self):
-        self.erro_sintatico = "Erro sintatico - linha: " + self.entrada[self.posicao_token_atual].line + " , coluna: " + self.entrada[self.posicao_token_atual].column + "\n" + " Token problemático: " + self.entrada[self.posicao_token_atual].value + "\n"
-        self.tem_erro_sintatico = True
-        print(self.erro_sintatico)
-
 
     def parse(self) -> SyNode:
         return self.program()
@@ -56,8 +50,9 @@ class Parser():
         self.declaration_list(raiz)
 
         if(self.posicao_token_atual < len(self.entrada)):
-            self.erro()
+            raise SyParserTokenException(self.entrada[self.posicao_token_atual])
 
+        print("\nPassou no analisador sintatico!")
         return raiz
 
 
@@ -113,13 +108,13 @@ class Parser():
                     parent.add_children(novo_no)
                     return True
 
-                self.posicao_token_atual = posicao_token_no_atual
-                if (self.match_terminal(parent=novo_no, expectedTokenTag="open_square_brackets")):
-                    if (self.match_terminal(parent=novo_no, expectedTokenTag="num")):
-                        if (self.match_terminal(parent=novo_no, expectedTokenTag="close_square_brackets")):
-                            if (self.match_terminal(parent=novo_no, expectedTokenTag="semicolon")):
-                                parent.add_children(novo_no)
-                                return True
+            self.posicao_token_atual = posicao_token_no_atual
+            if (self.match_terminal(parent=novo_no, expectedTokenTag="open_square_brackets")):
+                if (self.match_terminal(parent=novo_no, expectedTokenTag="num")):
+                    if (self.match_terminal(parent=novo_no, expectedTokenTag="close_square_brackets")):
+                        if (self.match_terminal(parent=novo_no, expectedTokenTag="semicolon")):
+                            parent.add_children(novo_no)
+                            return True
 
         return False
 
@@ -227,27 +222,28 @@ class Parser():
                             
         return False
     
-    # <local-decl> -> <local-decl'>
+    # <local-decl> -> <var-decl> <local-decl'> | epsilon
     def local_decl(self, parent: SyNode):
         novo_no = SyNode(symbol=Producao.LOCAL_DECLARATIONS) 
-
-        if (self.local_decl_linha(novo_no)):
-            parent.add_children(novo_no)
-            return True
-            
-        return False
-    
-    # <local-decl'> -> <var-decl> <local-decl'> | epsilon
-    def local_decl_linha(self, parent: SyNode):
-        novo_no = SyNode(symbol=Producao.LOCAL_DECLARATIONS_LINHA) 
         posicao_token_no_atual = self.posicao_token_atual
 
         if (self.var_declaration(novo_no)):
             self.local_decl_linha(novo_no)
             parent.add_children(novo_no)
+
+        else:
+            self.posicao_token_atual = posicao_token_no_atual
+
+        return True
+
+    # <local-decl'> -> <local-decl>
+    def local_decl_linha(self, parent: SyNode):
+        novo_no = SyNode(symbol=Producao.LOCAL_DECLARATIONS_LINHA) 
+
+        if (self.local_decl(novo_no)):
+            parent.add_children(novo_no)
             return True
-        
-        self.posicao_token_atual = posicao_token_no_atual
+            
         return False
 
     # <stmt-list> -> <stmt-list'>
@@ -260,18 +256,19 @@ class Parser():
             
         return False
 
-    # <stmt-list'> -> <statement> <stmt-list'> | epsilon
+    # <stmt-list'> -> <statement> <stmt-list> | epsilon
     def statement_list_linha(self, parent: SyNode):
         novo_no = SyNode(symbol=Producao.STATEMENT_LIST_LINHA) 
         posicao_token_no_atual = self.posicao_token_atual
 
         if (self.statement(novo_no)):
-            self.statement_list_linha(novo_no)
+            self.statement_list(novo_no)
             parent.add_children(novo_no)
-            return True
-        
-        self.posicao_token_atual = posicao_token_no_atual
-        return False
+            
+        else:
+            self.posicao_token_atual = posicao_token_no_atual
+
+        return True
 
     # <statement> -> <exp-stmt> | <compound-stmt> | <select-stmt> | <iter-stmt> | <return-stmt> 
     def statement(self, parent: SyNode):
@@ -372,13 +369,9 @@ class Parser():
         novo_no = SyNode(symbol=Producao.RETURN_STMT) 
 
         if (self.match_terminal(parent=novo_no, expectedTokenTag="return")):
-            if (self.match_terminal(parent=novo_no, expectedTokenTag="semicolon")):
-                    parent.add_children(novo_no)
-                    return True
-            if (self.expression(novo_no)):
-                if (self.match_terminal(parent=novo_no, expectedTokenTag="semicolon")):
-                    parent.add_children(novo_no)
-                    return True
+            if (self.expression_statement(novo_no)):
+                parent.add_children(novo_no)
+                return True
 
         return False
 
@@ -387,18 +380,18 @@ class Parser():
         novo_no = SyNode(symbol=Producao.EXPRESSION) 
         posicao_token_no_atual = self.posicao_token_atual
 
-        if (self.simple_expression(novo_no)):
-            parent.add_children(novo_no)
-            return True
+        if (self.var(novo_no)):
+            if (self.match_terminal(parent=novo_no, expectedTokenTag="assing")):
+                if (self.expression(novo_no)):
+                    parent.add_children(novo_no)
+                    return True
 
         self.posicao_token_atual = posicao_token_no_atual
         novo_no.children.clear()
 
-        if (self.var(novo_no)):
-            if (self.match_terminal(parent=novo_no, expectedTokenTag="eq")):
-                if (self.expression(novo_no)):
-                    parent.add_children(novo_no)
-                    return True
+        if (self.simple_expression(novo_no)):
+            parent.add_children(novo_no)
+            return True
 
         return False
 
@@ -413,8 +406,7 @@ class Parser():
                     if (self.match_terminal(parent=novo_no, expectedTokenTag="close_square_brackets")):
                         parent.add_children(novo_no)
                         return True
-
-                return False        
+  
             self.posicao_token_atual = posicao_token_no_atual
             parent.add_children(novo_no)
             return True
@@ -623,6 +615,3 @@ class Parser():
         self.posicao_token_atual = posicao_token_no_atual
         return False
                    
-
-if __name__ == "__main__":
-    parser = Parser()
