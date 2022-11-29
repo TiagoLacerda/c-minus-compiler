@@ -1,4 +1,5 @@
 from typing import *
+
 from token import Token
 from enumProducoes import Producao
 

@@ -1,6 +1,8 @@
-from token import Token
-from syParser import SyParser
 import os.path
+
+from syParser import SyParser
+from token import Token
+
 
 arquivo_entrada = "output/example.json"
 arquivo_entrada_invalido = "output/exampleInvalido.json"

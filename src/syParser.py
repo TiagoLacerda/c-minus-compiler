@@ -1,8 +1,9 @@
+import string
 from typing import *
+
 from enumProducoes import Producao
 from syNode import SyNode
 from token import Token
-import string
 
 
 class SyParserTokenException(Exception):

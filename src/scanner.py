@@ -1,5 +1,5 @@
-from src.dfa import DFA
-from src.token import Token
+from dfa import DFA
+from token import Token
 
 
 def get_line_column(string: str, index: int):
