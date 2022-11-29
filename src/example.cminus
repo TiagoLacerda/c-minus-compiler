@@ -1,0 +1,13 @@
+int main(void) {
+    /* this is a very nice comment */
+    int i ;
+    int j ;
+    while (i < 20)
+    {
+        if (i == j)
+        {
+            j = i;
+        }
+    }
+    return ;
+}

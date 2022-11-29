@@ -1,3 +1,4 @@
+from typing import *
 import json
 
 
@@ -6,7 +7,7 @@ class Token:
     Token.
     """
 
-    def __init__(self, value: str, tags: list[str], line: int, column: int):
+    def __init__(self, value: str, tags: List[str], line: int, column: int):
         """
         Create a Token.
 
@@ -56,4 +57,8 @@ class Token:
         """
         Returns a class instance from an equivalent json <str>.
         """
-        return Token.from_dict(json.loads(data))
+        listaTokens = []
+        conteudo = json.loads(data)
+        for token in conteudo['tokens']:
+            listaTokens.append(Token.from_dict(token))
+        return listaTokens

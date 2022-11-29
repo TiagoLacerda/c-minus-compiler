@@ -1,20 +1,12 @@
 {
     "tokens": [
         {
-            "value": "int",
-            "tags": [
-                "int"
-            ],
-            "line": 1,
-            "column": 1
-        },
-        {
             "value": "main",
             "tags": [
                 "id"
             ],
             "line": 1,
-            "column": 4
+            "column": 1
         },
         {
             "value": "(",
@@ -49,6 +41,14 @@
             "column": 12
         },
         {
+            "value": "/* this is a very nice comment */",
+            "tags": [
+                "comment"
+            ],
+            "line": 2,
+            "column": 5
+        },
+        {
             "value": "int",
             "tags": [
                 "int"
@@ -65,12 +65,28 @@
             "column": 9
         },
         {
+            "value": "=",
+            "tags": [
+                "assign"
+            ],
+            "line": 3,
+            "column": 11
+        },
+        {
+            "value": "0",
+            "tags": [
+                "num"
+            ],
+            "line": 3,
+            "column": 13
+        },
+        {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
             "line": 3,
-            "column": 11
+            "column": 14
         },
         {
             "value": "int",
@@ -89,12 +105,28 @@
             "column": 9
         },
         {
+            "value": "=",
+            "tags": [
+                "assign"
+            ],
+            "line": 4,
+            "column": 11
+        },
+        {
+            "value": "8",
+            "tags": [
+                "num"
+            ],
+            "line": 4,
+            "column": 13
+        },
+        {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
             "line": 4,
-            "column": 11
+            "column": 14
         },
         {
             "value": "while",
@@ -209,7 +241,7 @@
             "column": 9
         },
         {
-            "value": "j",
+            "value": "print",
             "tags": [
                 "id"
             ],
@@ -217,9 +249,9 @@
             "column": 13
         },
         {
-            "value": "=",
+            "value": "(",
             "tags": [
-                "assing"
+                "open_parenthesis"
             ],
             "line": 9,
             "column": 18
@@ -233,12 +265,20 @@
             "column": 19
         },
         {
+            "value": ")",
+            "tags": [
+                "close_parenthesis"
+            ],
+            "line": 9,
+            "column": 20
+        },
+        {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
             "line": 9,
-            "column": 20
+            "column": 21
         },
         {
             "value": "}",
@@ -265,12 +305,20 @@
             "column": 5
         },
         {
+            "value": "0",
+            "tags": [
+                "num"
+            ],
+            "line": 12,
+            "column": 12
+        },
+        {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
             "line": 12,
-            "column": 12
+            "column": 13
         },
         {
             "value": "}",
