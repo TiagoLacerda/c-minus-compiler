@@ -1,19 +1,19 @@
 from typing import *
+from token import Token
+from enumProducoes import Producao
 
-class synode:
+class SyNode:
     
     '''
     Node of a syntatic tree
     '''
-    EXPLORING = 0 # Checking if cureent derivation is the correct one
-    SUCCESS   = 1 # Current derivation is indeed correct
-    FAIL      = 2 # Current derivation failed, try next one
-    DEAD      = 3 # No more derivations to try, fails parent node
 
     def __init__(
         self,
-        symbol : str,
-        level : int
+        symbol : Producao,
+        token : Token = None,
+        parent = None,
+        level = 0
     ):
         
         '''
@@ -24,25 +24,13 @@ class synode:
         level: the depth of the node on the tree
         '''
 
-        self.symbol : str = symbol
-        self.level : int = level
-        self.parent : object = None
-        self.children : List[ object ] = list()
+        self.symbol = symbol
+        self.token = token
+        self.level = level
+        self.parent = parent
+        self.children = list()
 
-        self.derivation  : int = 0 # Current derivation being evaluated
-        self.to_explore  : int = 0 # Next Symbol of current derivation to be explored
-        self.status      : int = synode.EXPLORING
-
-        #---------------------------------------------------------
-        # index of the last token matched by the tree with root in
-        # self
-        self.last_match  : int = -1
-
-    def add_children( self , state : str ):
-
-        child = synode( state , self.level + 1 )
-        child.parent = self
-        child.last_match = self.last_match
+    def add_children( self , child ):
         self.children.append( child )
     
     #------------------------------------------------------------
@@ -58,7 +46,10 @@ class synode:
             node = nodes[ -1 ]
             if explored[ -1 ] == -1:
                 indent = ( node.level - self.level )*"| "
-                s = s + f"{indent}{node.symbol}\n"
+                if (node.symbol == None):
+                    s = s + f"{indent}{node.token.tags[0]}\n"
+                else:
+                    s = s + f"{indent}{node.symbol.name}\n"
                 explored[ -1 ] = 0
 
             if explored[ -1 ] >= len( node.children ):

@@ -1,0 +1,13 @@
+main(void) {
+    /* this is a very nice comment */
+    int i = 0;
+    int j = 8;
+    while (i < 20)
+    {
+        if (i == j)
+        {
+            print(i);
+        }
+    }
+    return 0;
+}
