@@ -112,4 +112,7 @@ class Scanner:
         # Remove <blank> tokens
         tokens = [token for token in tokens if "blank" not in token.tags]
 
+        # Remove <comment> tokens
+        tokens = [token for token in tokens if "comment" not in token.tags]
+
         return tokens

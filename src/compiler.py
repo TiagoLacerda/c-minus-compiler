@@ -4,6 +4,7 @@ import sys
 from dfa import DFA
 from token import Token
 from scanner import Scanner
+from syParser import SyParser
 
 """
 This file is dedicated to scanning and parsing source code written in the C-Minus language.
@@ -63,7 +64,7 @@ def print_minified(tokens: list[Token]):
 if len(sys.argv) < 2:
     raise RuntimeError("Not enough arguments!")
 
-if len(sys.argv) > 6:
+if len(sys.argv) > 7:
     raise RuntimeError("Too many arguments!")
 
 # Load Scanner automaton
@@ -95,4 +96,23 @@ if "-o" in sys.argv:
     # Output tokens to .json file
     f = open(sys.argv[2], "w")
     f.write(json.dumps({"tokens": [token.to_dict() for token in tokens]}))
+    f.close()
+
+
+parser = SyParser(entrada=tokens)
+tree = parser.parse()
+
+
+if "-d" in sys.argv:
+    if "-v" in sys.argv:
+        # Print syntatic tree to console
+        print(tree)
+    else:
+        # Print whether parser accepted
+        print("Token sequence accepted!")
+
+if "-o" in sys.argv:
+    # Output tokens to .json file
+    f = open(sys.argv[3], "w")
+    f.write(tree.__str__())
     f.close()
