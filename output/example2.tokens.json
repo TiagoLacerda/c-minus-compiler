@@ -1,0 +1,196 @@
+{
+    "tokens": [
+        {
+            "value": "int",
+            "tags": [
+                "int"
+            ],
+            "line": 1,
+            "column": 1
+        },
+        {
+            "value": "main",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 5
+        },
+        {
+            "value": "(",
+            "tags": [
+                "open_parenthesis"
+            ],
+            "line": 1,
+            "column": 9
+        },
+        {
+            "value": "int",
+            "tags": [
+                "int"
+            ],
+            "line": 1,
+            "column": 10
+        },
+        {
+            "value": "i",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 14
+        },
+        {
+            "value": ",",
+            "tags": [
+                "comma"
+            ],
+            "line": 1,
+            "column": 15
+        },
+        {
+            "value": "int",
+            "tags": [
+                "int"
+            ],
+            "line": 1,
+            "column": 17
+        },
+        {
+            "value": "j",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 21
+        },
+        {
+            "value": ")",
+            "tags": [
+                "close_parenthesis"
+            ],
+            "line": 1,
+            "column": 22
+        },
+        {
+            "value": "{",
+            "tags": [
+                "open_brackets"
+            ],
+            "line": 1,
+            "column": 24
+        },
+        {
+            "value": "return",
+            "tags": [
+                "return"
+            ],
+            "line": 2,
+            "column": 5
+        },
+        {
+            "value": "(",
+            "tags": [
+                "open_parenthesis"
+            ],
+            "line": 2,
+            "column": 12
+        },
+        {
+            "value": "i",
+            "tags": [
+                "id"
+            ],
+            "line": 2,
+            "column": 13
+        },
+        {
+            "value": "*",
+            "tags": [
+                "asterisk"
+            ],
+            "line": 2,
+            "column": 15
+        },
+        {
+            "value": "i",
+            "tags": [
+                "id"
+            ],
+            "line": 2,
+            "column": 17
+        },
+        {
+            "value": ")",
+            "tags": [
+                "close_parenthesis"
+            ],
+            "line": 2,
+            "column": 18
+        },
+        {
+            "value": "+",
+            "tags": [
+                "plus"
+            ],
+            "line": 2,
+            "column": 20
+        },
+        {
+            "value": "(",
+            "tags": [
+                "open_parenthesis"
+            ],
+            "line": 2,
+            "column": 22
+        },
+        {
+            "value": "j",
+            "tags": [
+                "id"
+            ],
+            "line": 2,
+            "column": 23
+        },
+        {
+            "value": "*",
+            "tags": [
+                "asterisk"
+            ],
+            "line": 2,
+            "column": 25
+        },
+        {
+            "value": "j",
+            "tags": [
+                "id"
+            ],
+            "line": 2,
+            "column": 27
+        },
+        {
+            "value": ")",
+            "tags": [
+                "close_parenthesis"
+            ],
+            "line": 2,
+            "column": 28
+        },
+        {
+            "value": ";",
+            "tags": [
+                "semicolon"
+            ],
+            "line": 2,
+            "column": 29
+        },
+        {
+            "value": "}",
+            "tags": [
+                "close_brackets"
+            ],
+            "line": 3,
+            "column": 1
+        }
+    ]
+}

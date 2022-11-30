@@ -14,7 +14,7 @@
                 "id"
             ],
             "line": 1,
-            "column": 4
+            "column": 5
         },
         {
             "value": "(",
@@ -22,7 +22,7 @@
                 "open_parenthesis"
             ],
             "line": 1,
-            "column": 5
+            "column": 9
         },
         {
             "value": "void",
@@ -30,7 +30,7 @@
                 "void"
             ],
             "line": 1,
-            "column": 6
+            "column": 10
         },
         {
             "value": ")",
@@ -38,7 +38,7 @@
                 "close_parenthesis"
             ],
             "line": 1,
-            "column": 10
+            "column": 14
         },
         {
             "value": "{",
@@ -46,14 +46,14 @@
                 "open_brackets"
             ],
             "line": 1,
-            "column": 12
+            "column": 16
         },
         {
             "value": "int",
             "tags": [
                 "int"
             ],
-            "line": 3,
+            "line": 2,
             "column": 5
         },
         {
@@ -61,7 +61,7 @@
             "tags": [
                 "id"
             ],
-            "line": 3,
+            "line": 2,
             "column": 9
         },
         {
@@ -69,45 +69,61 @@
             "tags": [
                 "semicolon"
             ],
-            "line": 3,
-            "column": 11
-        },
-        {
-            "value": "int",
-            "tags": [
-                "int"
-            ],
-            "line": 4,
-            "column": 5
-        },
-        {
-            "value": "j",
-            "tags": [
-                "id"
-            ],
-            "line": 4,
-            "column": 9
-        },
-        {
-            "value": ";",
-            "tags": [
-                "semicolon"
-            ],
-            "line": 4,
-            "column": 11
+            "line": 2,
+            "column": 10
         },
         {
             "value": "while",
             "tags": [
                 "while"
             ],
-            "line": 5,
+            "line": 3,
             "column": 5
         },
         {
             "value": "(",
             "tags": [
                 "open_parenthesis"
+            ],
+            "line": 3,
+            "column": 10
+        },
+        {
+            "value": "1",
+            "tags": [
+                "num"
+            ],
+            "line": 3,
+            "column": 11
+        },
+        {
+            "value": ")",
+            "tags": [
+                "close_parenthesis"
+            ],
+            "line": 3,
+            "column": 12
+        },
+        {
+            "value": "{",
+            "tags": [
+                "open_brackets"
+            ],
+            "line": 4,
+            "column": 5
+        },
+        {
+            "value": "i",
+            "tags": [
+                "id"
+            ],
+            "line": 5,
+            "column": 9
+        },
+        {
+            "value": "=",
+            "tags": [
+                "assign"
             ],
             "line": 5,
             "column": 11
@@ -118,142 +134,38 @@
                 "id"
             ],
             "line": 5,
-            "column": 12
+            "column": 13
         },
         {
-            "value": "<",
+            "value": "+",
             "tags": [
-                "lt"
+                "plus"
             ],
             "line": 5,
-            "column": 14
+            "column": 15
         },
         {
-            "value": "20",
+            "value": "1",
             "tags": [
                 "num"
             ],
             "line": 5,
-            "column": 16
-        },
-        {
-            "value": ")",
-            "tags": [
-                "close_parenthesis"
-            ],
-            "line": 5,
-            "column": 18
-        },
-        {
-            "value": "{",
-            "tags": [
-                "open_brackets"
-            ],
-            "line": 6,
-            "column": 5
-        },
-        {
-            "value": "if",
-            "tags": [
-                "if"
-            ],
-            "line": 7,
-            "column": 9
-        },
-        {
-            "value": "(",
-            "tags": [
-                "open_parenthesis"
-            ],
-            "line": 7,
-            "column": 12
-        },
-        {
-            "value": "i",
-            "tags": [
-                "id"
-            ],
-            "line": 7,
-            "column": 13
-        },
-        {
-            "value": "==",
-            "tags": [
-                "eq"
-            ],
-            "line": 7,
-            "column": 15
-        },
-        {
-            "value": "j",
-            "tags": [
-                "id"
-            ],
-            "line": 7,
-            "column": 18
-        },
-        {
-            "value": ")",
-            "tags": [
-                "close_parenthesis"
-            ],
-            "line": 7,
-            "column": 19
-        },
-        {
-            "value": "{",
-            "tags": [
-                "open_brackets"
-            ],
-            "line": 8,
-            "column": 9
-        },
-        {
-            "value": "j",
-            "tags": [
-                "id"
-            ],
-            "line": 9,
-            "column": 13
-        },
-        {
-            "value": "=",
-            "tags": [
-                "assing"
-            ],
-            "line": 9,
-            "column": 18
-        },
-        {
-            "value": "i",
-            "tags": [
-                "id"
-            ],
-            "line": 9,
-            "column": 19
+            "column": 17
         },
         {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
-            "line": 9,
-            "column": 20
+            "line": 5,
+            "column": 18
         },
         {
             "value": "}",
             "tags": [
                 "close_brackets"
             ],
-            "line": 10,
-            "column": 9
-        },
-        {
-            "value": "}",
-            "tags": [
-                "close_brackets"
-            ],
-            "line": 11,
+            "line": 6,
             "column": 5
         },
         {
@@ -261,23 +173,31 @@
             "tags": [
                 "return"
             ],
-            "line": 12,
+            "line": 7,
             "column": 5
+        },
+        {
+            "value": "0",
+            "tags": [
+                "num"
+            ],
+            "line": 7,
+            "column": 12
         },
         {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
-            "line": 12,
-            "column": 12
+            "line": 7,
+            "column": 13
         },
         {
             "value": "}",
             "tags": [
                 "close_brackets"
             ],
-            "line": 13,
+            "line": 8,
             "column": 1
         }
     ]
