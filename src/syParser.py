@@ -383,7 +383,7 @@ class SyParser():
         posicao_token_no_atual = self.posicao_token_atual
 
         if (self.var(novo_no)):
-            if (self.match_terminal(parent=novo_no, expectedTokenTag="assing")):
+            if (self.match_terminal(parent=novo_no, expectedTokenTag="assign")):
                 if (self.expression(novo_no)):
                     parent.add_children(novo_no)
                     return True
