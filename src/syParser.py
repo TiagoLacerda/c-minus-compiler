@@ -53,8 +53,6 @@ class SyParser():
         if(self.posicao_token_atual < len(self.entrada)):
             raise SyParserTokenException(self.entrada[self.posicao_token_atual])
 
-        print(raiz)
-        print("\nPassou no analisador sintatico!")
         return raiz
 
 
