@@ -1,13 +1,8 @@
 int main(void) {
-    /* this is a very nice comment */
-    int i ;
-    int j ;
-    while (i < 20)
+    int i;
+    while(1)
     {
-        if (i == j)
-        {
-            j = i;
-        }
+        i = i + 1;
     }
-    return ;
+    return 0;
 }
