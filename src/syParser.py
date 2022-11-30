@@ -100,7 +100,8 @@ class SyParser():
     # <var-declaration> -> <type-spec> id [ num ] ; | <type-spec> id ;
     def var_declaration(self, parent: SyNode):
         novo_no = SyNode(symbol=Producao.VAR_DECLARATION, parent=parent, level=parent.level+1) 
-
+        posicao_token_no_atual = self.posicao_token_atual
+        
         if (self.type_spec(novo_no)):
             if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
                 posicao_token_no_atual = self.posicao_token_atual
