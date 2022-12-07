@@ -12,6 +12,12 @@ class SyParserTokenException(Exception):
             token.line, token.column, token.value)
         super().__init__(self.erro)
 
+class SyParserDeclarationException(Exception):
+    def __init__(self, token):
+        self.erro = "Identificador não declarado {} - linha: {} , coluna: {}\n".format(
+            token.value ,token.line, token.column)
+        super().__init__(self.erro)
+
 # Declarando Classe do Analisador Sintatico
 
 
@@ -21,15 +27,18 @@ class SyParser():
     def __init__(
         self,
         entrada: List[Token] = [],
-        posicao_token_atual: int = 0,
     ):
 
         self.entrada = entrada
-        self.posicao_token_atual = posicao_token_atual
+        self.posicao_token_atual = 0
+        self.posicao_ultimo_id_declarado = -1
+        self.posicao_auxiliar_erro = 0
+        self.identificadores_declarados = []
 
     # Faz o cabecote de leitura apontar para o proximo token da lista
     def next_token(self):
         self.posicao_token_atual += 1
+        self.posicao_auxiliar_erro = self.posicao_token_atual 
 
     # Dá match com terminal e cria folha do terminal na arvore
     def match_terminal(self, parent: SyNode, expectedTokenTag: string):
@@ -43,6 +52,16 @@ class SyParser():
             return True
         return False
 
+    def match_identificador_declarado(self):
+        if self.posicao_token_atual >= len(self.entrada):
+            return False
+        if ((self.entrada[self.posicao_token_atual].value not in self.identificadores_declarados) and (self.entrada[self.posicao_token_atual].tags[0] == "id")):
+            raise SyParserDeclarationException(self.entrada[self.posicao_token_atual])
+        return True
+
+    def add_identificador_declarado(self):
+        self.identificadores_declarados.append(self.entrada[self.posicao_ultimo_id_declarado].value)
+
     def parse(self) -> SyNode:
         return self.program()
 
@@ -53,12 +72,11 @@ class SyParser():
 
         if (self.posicao_token_atual < len(self.entrada)):
             raise SyParserTokenException(
-                self.entrada[self.posicao_token_atual])
+                self.entrada[self.posicao_auxiliar_erro])
 
         return raiz
 
     # <declaration-list> -> <declaration> <declaration-list'>
-
     def declaration_list(self, parent: SyNode):
         novo_no = SyNode(symbol=Producao.DECLARATION_LIST,
                          parent=parent, level=parent.level+1)
@@ -77,6 +95,7 @@ class SyParser():
         posicao_token_no_atual = self.posicao_token_atual
 
         if (self.var_declaration(novo_no)):
+            self.add_identificador_declarado()
             parent.add_children(novo_no)
             return True
 
@@ -84,6 +103,7 @@ class SyParser():
         novo_no.children.clear()
 
         if (self.fun_declaration(novo_no)):
+            self.add_identificador_declarado()
             parent.add_children(novo_no)
             return True
 
@@ -111,6 +131,7 @@ class SyParser():
         if (self.type_spec(novo_no)):
             if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
                 posicao_token_no_atual = self.posicao_token_atual
+                self.posicao_ultimo_id_declarado = self.posicao_token_atual-1
                 if (self.match_terminal(parent=novo_no, expectedTokenTag="semicolon")):
                     parent.add_children(novo_no)
                     return True
@@ -148,6 +169,7 @@ class SyParser():
 
         if (self.type_spec(novo_no)):
             if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
+                self.posicao_ultimo_id_declarado = self.posicao_token_atual-1
                 if (self.match_terminal(parent=novo_no, expectedTokenTag="open_parenthesis")):
                     if (self.params(novo_no)):
                         if (self.match_terminal(parent=novo_no, expectedTokenTag="close_parenthesis")):
@@ -182,6 +204,7 @@ class SyParser():
                          parent=parent, level=parent.level+1)
 
         if (self.param(novo_no)):
+            self.add_identificador_declarado()
             self.param_list_linha(novo_no)
             parent.add_children(novo_no)
             return True
@@ -196,6 +219,7 @@ class SyParser():
         if (self.type_spec(novo_no)):
             if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
                 posicao_token_no_atual = self.posicao_token_atual
+                self.posicao_ultimo_id_declarado = self.posicao_token_atual-1
                 if (self.match_terminal(parent=novo_no, expectedTokenTag="open_square_brackets")):
                     if (self.match_terminal(parent=novo_no, expectedTokenTag="close_square_brackets")):
                         parent.add_children(novo_no)
@@ -215,6 +239,7 @@ class SyParser():
 
         if (self.match_terminal(parent=novo_no, expectedTokenTag="comma")):
             if (self.param(novo_no)):
+                self.add_identificador_declarado()
                 self.param_list_linha(novo_no)
                 parent.add_children(novo_no)
                 return True
@@ -243,6 +268,7 @@ class SyParser():
         posicao_token_no_atual = self.posicao_token_atual
 
         if (self.var_declaration(novo_no)):
+            self.add_identificador_declarado()
             self.local_decl_linha(novo_no)
             parent.add_children(novo_no)
 
@@ -424,7 +450,7 @@ class SyParser():
         novo_no = SyNode(symbol=Producao.VAR, parent=parent,
                          level=parent.level+1)
 
-        if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
+        if (self.match_identificador_declarado() and self.match_terminal(parent=novo_no, expectedTokenTag="id")):
             posicao_token_no_atual = self.posicao_token_atual
             if (self.match_terminal(parent=novo_no, expectedTokenTag="open_square_brackets")):
                 if (self.expression(novo_no)):
@@ -609,7 +635,7 @@ class SyParser():
         novo_no = SyNode(symbol=Producao.CALL,
                          parent=parent, level=parent.level+1)
 
-        if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
+        if (self.match_identificador_declarado() and self.match_terminal(parent=novo_no, expectedTokenTag="id")):
             if (self.match_terminal(parent=novo_no, expectedTokenTag="open_parenthesis")):
                 if (self.args(novo_no)):
                     if (self.match_terminal(parent=novo_no, expectedTokenTag="close_parenthesis")):
