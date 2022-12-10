@@ -1,0 +1,132 @@
+{
+    "tokens": [
+        {
+            "value": "int",
+            "tags": [
+                "int"
+            ],
+            "line": 1,
+            "column": 1
+        },
+        {
+            "value": "main",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 5
+        },
+        {
+            "value": "(",
+            "tags": [
+                "open_parenthesis"
+            ],
+            "line": 1,
+            "column": 9
+        },
+        {
+            "value": "int",
+            "tags": [
+                "int"
+            ],
+            "line": 1,
+            "column": 10
+        },
+        {
+            "value": "i",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 14
+        },
+        {
+            "value": ",",
+            "tags": [
+                "comma"
+            ],
+            "line": 1,
+            "column": 15
+        },
+        {
+            "value": "int",
+            "tags": [
+                "int"
+            ],
+            "line": 1,
+            "column": 17
+        },
+        {
+            "value": "j",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 21
+        },
+        {
+            "value": ")",
+            "tags": [
+                "close_parenthesis"
+            ],
+            "line": 1,
+            "column": 22
+        },
+        {
+            "value": "{",
+            "tags": [
+                "open_brackets"
+            ],
+            "line": 2,
+            "column": 1
+        },
+        {
+            "value": "return",
+            "tags": [
+                "return"
+            ],
+            "line": 3,
+            "column": 5
+        },
+        {
+            "value": "i",
+            "tags": [
+                "id"
+            ],
+            "line": 3,
+            "column": 12
+        },
+        {
+            "value": "==",
+            "tags": [
+                "eq"
+            ],
+            "line": 3,
+            "column": 14
+        },
+        {
+            "value": "k",
+            "tags": [
+                "id"
+            ],
+            "line": 3,
+            "column": 17
+        },
+        {
+            "value": ";",
+            "tags": [
+                "semicolon"
+            ],
+            "line": 3,
+            "column": 18
+        },
+        {
+            "value": "}",
+            "tags": [
+                "close_brackets"
+            ],
+            "line": 4,
+            "column": 1
+        }
+    ]
+}

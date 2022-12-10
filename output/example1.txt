@@ -1,0 +1,46 @@
+PROGRAM
+| DECLARATION_LIST
+| | DECLARATION
+| | | FUN_DECLARATION
+| | | | TYPE_SPECIFIER
+| | | | | int
+| | | | id
+| | | | open_parenthesis
+| | | | PARAMS
+| | | | | PARAM_LIST
+| | | | | | PARAM
+| | | | | | | TYPE_SPECIFIER
+| | | | | | | | int
+| | | | | | | id
+| | | | | | PARAM_LIST_LINHA
+| | | | | | | comma
+| | | | | | | PARAM
+| | | | | | | | TYPE_SPECIFIER
+| | | | | | | | | int
+| | | | | | | | id
+| | | | close_parenthesis
+| | | | COMPOUND_STMT
+| | | | | open_brackets
+| | | | | STATEMENT_LIST
+| | | | | | STATEMENT_LIST_LINHA
+| | | | | | | STATEMENT
+| | | | | | | | RETURN_STMT
+| | | | | | | | | return
+| | | | | | | | | EXPRESSION_STMT
+| | | | | | | | | | EXPRESSION
+| | | | | | | | | | | SIMPLE_EXPRESSION
+| | | | | | | | | | | | ADDITIVE_EXPRESSION
+| | | | | | | | | | | | | TERM
+| | | | | | | | | | | | | | FACTOR
+| | | | | | | | | | | | | | | VAR
+| | | | | | | | | | | | | | | | id
+| | | | | | | | | | | | RELOP
+| | | | | | | | | | | | | eq
+| | | | | | | | | | | | ADDITIVE_EXPRESSION
+| | | | | | | | | | | | | TERM
+| | | | | | | | | | | | | | FACTOR
+| | | | | | | | | | | | | | | VAR
+| | | | | | | | | | | | | | | | id
+| | | | | | | | | | semicolon
+| | | | | | | STATEMENT_LIST
+| | | | | close_brackets

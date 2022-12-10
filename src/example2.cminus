@@ -1,3 +1,4 @@
-int main(int i, int j) {
-    return (i * i) + (j * j);
+int main(int ç, int j)
+{
+    return i == j;
 }

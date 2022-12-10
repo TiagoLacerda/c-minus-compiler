@@ -41,12 +41,28 @@
             "column": 14
         },
         {
+            "value": "18",
+            "tags": [
+                "num"
+            ],
+            "line": 1,
+            "column": 15
+        },
+        {
+            "value": "n",
+            "tags": [
+                "id"
+            ],
+            "line": 1,
+            "column": 17
+        },
+        {
             "value": ",",
             "tags": [
                 "comma"
             ],
             "line": 1,
-            "column": 15
+            "column": 18
         },
         {
             "value": "int",
@@ -54,7 +70,7 @@
                 "int"
             ],
             "line": 1,
-            "column": 17
+            "column": 20
         },
         {
             "value": "j",
@@ -62,7 +78,7 @@
                 "id"
             ],
             "line": 1,
-            "column": 21
+            "column": 24
         },
         {
             "value": ")",
@@ -70,126 +86,62 @@
                 "close_parenthesis"
             ],
             "line": 1,
-            "column": 22
+            "column": 25
         },
         {
             "value": "{",
             "tags": [
                 "open_brackets"
             ],
-            "line": 1,
-            "column": 24
+            "line": 2,
+            "column": 1
         },
         {
             "value": "return",
             "tags": [
                 "return"
             ],
-            "line": 2,
+            "line": 3,
             "column": 5
         },
         {
-            "value": "(",
+            "value": "i",
             "tags": [
-                "open_parenthesis"
+                "id"
             ],
-            "line": 2,
+            "line": 3,
             "column": 12
         },
         {
-            "value": "i",
+            "value": "==",
+            "tags": [
+                "eq"
+            ],
+            "line": 3,
+            "column": 14
+        },
+        {
+            "value": "j",
             "tags": [
                 "id"
             ],
-            "line": 2,
-            "column": 13
-        },
-        {
-            "value": "*",
-            "tags": [
-                "asterisk"
-            ],
-            "line": 2,
-            "column": 15
-        },
-        {
-            "value": "i",
-            "tags": [
-                "id"
-            ],
-            "line": 2,
+            "line": 3,
             "column": 17
-        },
-        {
-            "value": ")",
-            "tags": [
-                "close_parenthesis"
-            ],
-            "line": 2,
-            "column": 18
-        },
-        {
-            "value": "+",
-            "tags": [
-                "plus"
-            ],
-            "line": 2,
-            "column": 20
-        },
-        {
-            "value": "(",
-            "tags": [
-                "open_parenthesis"
-            ],
-            "line": 2,
-            "column": 22
-        },
-        {
-            "value": "j",
-            "tags": [
-                "id"
-            ],
-            "line": 2,
-            "column": 23
-        },
-        {
-            "value": "*",
-            "tags": [
-                "asterisk"
-            ],
-            "line": 2,
-            "column": 25
-        },
-        {
-            "value": "j",
-            "tags": [
-                "id"
-            ],
-            "line": 2,
-            "column": 27
-        },
-        {
-            "value": ")",
-            "tags": [
-                "close_parenthesis"
-            ],
-            "line": 2,
-            "column": 28
         },
         {
             "value": ";",
             "tags": [
                 "semicolon"
             ],
-            "line": 2,
-            "column": 29
+            "line": 3,
+            "column": 18
         },
         {
             "value": "}",
             "tags": [
                 "close_brackets"
             ],
-            "line": 3,
+            "line": 4,
             "column": 1
         }
     ]
