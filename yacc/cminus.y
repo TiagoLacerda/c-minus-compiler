@@ -1,16 +1,15 @@
 %{
     #include<stdio.h>
-    #include<string.h>
     #include<stdlib.h>
+    #include<string.h>
     #include<ctype.h>
-    #include"lex.yy.c"
-    
+
     void yyerror(const char *s);
     int yylex();
     int yywrap();
 %}
 
-%token PLUS MINUS ASTERISK SLASH LT LE GT GE EQ NE ASSIGN SEMICOLON COMMA OPENPARENTHESIS CLOSEPARENTHESIS OPENSQUAREBRACKETS CLOSESQUAREBRACKETS OPENBRACKETS CLOSEBRACKETS ELSE IF INT RETURN VOID WHILE ID NUM
+%token PLUS MINUS ASTERISK SLASH LT LE GT GE EQ NE ASSIGN SEMICOLON COMMA OPENPARENTHESIS CLOSEPARENTHESIS OPENSQUAREBRACKETS CLOSESQUAREBRACKETS OPENBRACKETS CLOSEBRACKETS ELSE IF INT RETURN VOID WHILE ID NUM ERROR
 
 %%
 
@@ -169,10 +168,6 @@ arglistlinha: COMMA arglist
 ;
 
 %%
-
-int main() {
-    yyparse();
-}
 
 void yyerror(const char* msg) {
     fprintf(stderr, "%s\n", msg);

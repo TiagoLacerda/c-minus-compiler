@@ -1,9 +1,9 @@
 %option yylineno
 
 %{
-#ifndef GLOBALS_H
-#define GLOBALS_H
-#include "globals.h"
+#ifndef CMINUS_TAB_H
+#define CMINUS_TAB_H
+#include "cminus.tab.h"
 #endif
 %}
 
