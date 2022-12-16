@@ -103,7 +103,6 @@ class SyParser():
         novo_no.children.clear()
 
         if (self.fun_declaration(novo_no)):
-            self.add_identificador_declarado()
             parent.add_children(novo_no)
             return True
 
@@ -169,12 +168,14 @@ class SyParser():
 
         if (self.type_spec(novo_no)):
             if (self.match_terminal(parent=novo_no, expectedTokenTag="id")):
-                self.posicao_ultimo_id_declarado = self.posicao_token_atual-1
+                posicao_ultimo_id_declarado = self.posicao_token_atual-1
                 if (self.match_terminal(parent=novo_no, expectedTokenTag="open_parenthesis")):
                     if (self.params(novo_no)):
                         if (self.match_terminal(parent=novo_no, expectedTokenTag="close_parenthesis")):
                             if (self.compound_statement(novo_no)):
                                 parent.add_children(novo_no)
+                                self.posicao_ultimo_id_declarado = posicao_ultimo_id_declarado
+                                self.add_identificador_declarado()
                                 return True
 
         return False
